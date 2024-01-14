@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom"
 import PokemonDetails from "./details/PokemonDetails"
 import { AxiosResponse } from "axios"
 import { axiosInstance } from "./api/api"
-import { fetchAbilities, fetchMoves, updateCache } from "./reducers/pokemonSlice"
+import { fetchAbilities, fetchEvolutionChain, fetchMoves, updateCache } from "./reducers/pokemonSlice"
 import store from "./store/pokemonStore"
 import { FrontPage } from "./FrontPage"
 import { Pokemon } from "./details/Pokemon.model"
@@ -18,6 +18,7 @@ function buildPokemonObject(response: AxiosResponse): Pokemon {
     moves: [],
     types: [],
     speciesUrl: data.species.url,
+    sprites: [data.sprites['front_default'], data.sprites['back_default']]
   }
 
   data.abilities.map((val: any) => {
@@ -43,12 +44,13 @@ export const router = createBrowserRouter([
     path: "/pokemon/:id",
     element: <PokemonDetails />,
     loader: async ({ params }) => {
-      store.dispatch(updateCache(params["id"]))
       let pokemon: Pokemon = buildPokemonObject(
         await axiosInstance.get("pokemon/" + params["id"])
       )
+      store.dispatch(updateCache({id: params["id"], name: pokemon.name}))
       await store.dispatch(fetchAbilities(pokemon.abilities))
       await store.dispatch(fetchMoves(pokemon.moves))
+      await store.dispatch(fetchEvolutionChain(pokemon.id))
       return { pokemon: pokemon }
     },
   },

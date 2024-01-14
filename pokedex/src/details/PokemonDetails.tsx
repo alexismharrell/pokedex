@@ -5,6 +5,7 @@ import { useLoaderData } from "react-router-dom"
 import SearchField from "../search/SearchComponent"
 import RecentSearch from "../recentSearch/RecentSearch"
 import PokemonDetailsPanel from "./PokemonDetailsPanel"
+import PokemonEvolutionsPanel from "./PokemonEvolutionsPanel"
 
 const Header = styled.div`
   display: flex;
@@ -15,7 +16,6 @@ const Header = styled.div`
 
 const PokemonDetails: React.FC<any> = () => {
   const loaderData: any = useLoaderData()
-  console.info(loaderData)
   const pokemon = loaderData.pokemon
 
   return (
@@ -23,20 +23,17 @@ const PokemonDetails: React.FC<any> = () => {
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Header>
-            <div>Website name and link to home here</div>
             <SearchField />
           </Header>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={2}>
           <RecentSearch />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={8}>
           <PokemonDetailsPanel pokemon={pokemon} />
         </Grid>
         <Grid item xs={2}>
-          <Paper elevation={6}>
-            <Typography variant='h5'>Evolution list</Typography>
-          </Paper>
+          <PokemonEvolutionsPanel />
         </Grid>
       </Grid>
     </Box>

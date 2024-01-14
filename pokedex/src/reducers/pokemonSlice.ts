@@ -1,14 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios, { AxiosResponse } from "axios"
 import { axiosInstance } from "../api/api"
-import { Ability, AbilityMeta, Move, MoveMeta } from "../details/Pokemon.model"
+import {
+  Ability,
+  AbilityMeta,
+  Move,
+  MoveMeta,
+  RecentView,
+} from "../details/Pokemon.model"
 
 export type PokemonStoreState = {
   list: any[]
   status: string
-  cache: string[]
+  cache: RecentView[]
   currentMoveList: Move[]
   currentAbilityList: Ability[]
+  evolutionChain: string[]
 }
 
 const initialState: PokemonStoreState = {
@@ -17,6 +24,7 @@ const initialState: PokemonStoreState = {
   cache: [],
   currentMoveList: [],
   currentAbilityList: [],
+  evolutionChain: [],
 }
 
 export const fetchAll = createAsyncThunk("pokemon/fetchAll", async () => {
@@ -52,7 +60,6 @@ export const fetchAbilities = createAsyncThunk(
 export const fetchMoves = createAsyncThunk(
   "pokemon/fetchMoves",
   async (moveMetaData: MoveMeta[]) => {
-    console.info(moveMetaData)
     let retArr: any[] = []
     let promiseList: any[] = []
     moveMetaData.map((metaData: MoveMeta) => {
@@ -81,19 +88,50 @@ export const fetchMoves = createAsyncThunk(
   }
 )
 
+const parseEvolutionChain = (evo: any): string[] => {
+  const current = evo.species.name
+  let out: any[] = []
+
+  if (evo["evolves_to"] && evo["evolves_to"].length > 0) {
+    evo["evolves_to"].map((ev: any) => {
+      let next = parseEvolutionChain(ev)[0]
+      out = [...out, `${current} -> ${next}`]
+    })
+  } else {
+    out = [...out, `${current}`]
+  }
+
+  return out
+}
+
+export const fetchEvolutionChain = createAsyncThunk(
+  "pokemon/fetchEvolutionChain",
+  async (id: string) => {
+    const speciesResponse = await axiosInstance.get("pokemon-species/" + id)
+    const evolutionChainResponse = await axios.get(
+      speciesResponse.data["evolution_chain"].url
+    )
+    return parseEvolutionChain(evolutionChainResponse.data.chain)
+  }
+)
+
 const pokemonSlice = createSlice({
   name: "pokemon",
   initialState,
   reducers: {
     updateCache(state, action) {
-      const id = action.payload
-      const index = state.cache.indexOf(id)
+      console.info(action)
+      const id = action.payload.id
+      const name = action.payload.name
+      const index = state.cache.findIndex((val: RecentView) => {
+        return val.id === id
+      })
       //does it already exist, if so remove
       if (index > -1) {
         state.cache.splice(index, 1)
       }
       //add it to the front, if length after adding is over 10, remove oldest search
-      if (state.cache.unshift(id) > 10) {
+      if (state.cache.unshift({id: id, name: name}) > 10) {
         state.cache.pop()
       }
     },
@@ -115,6 +153,9 @@ const pokemonSlice = createSlice({
       })
       .addCase(fetchMoves.fulfilled, (state, action) => {
         state.currentMoveList = action.payload
+      })
+      .addCase(fetchEvolutionChain.fulfilled, (state, action) => {
+        state.evolutionChain = action.payload
       })
   },
 })

@@ -5,8 +5,9 @@ export interface Pokemon {
   weight: string
   abilities: AbilityMeta[]
   moves: MoveMeta[]
-  types: PokeType[],
+  types: PokeType[]
   speciesUrl: string
+  sprites: string[]
 }
 
 export interface AbilityMeta {
@@ -30,6 +31,11 @@ export interface Move {
   damageClass: string
   type: string
   pp: number
+}
+
+export interface RecentView {
+  name: string
+  id: string
 }
 
 export enum PokeType {

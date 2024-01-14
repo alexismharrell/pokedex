@@ -5,6 +5,7 @@ import styled from "@emotion/styled"
 import { Pokemon } from "./Pokemon.model"
 import PokemonAbilitiesTable from "./PokemonAbilitiesTable"
 import PokemonMovesTable from "./PokemonMovesTable"
+import PokemonSpritePanel from "./PokemonSpritePanel"
 
 const DataText = styled(Typography)`
   padding: 8px;
@@ -58,8 +59,8 @@ const PokemonDetailsPanel: React.FC<any> = (props: { pokemon: Pokemon }) => {
 
   return (
     <Grid container item spacing={2}>
-      <Grid item xs={3}>
-        <Paper elevation={6}>Pictur</Paper>
+      <Grid item xs={3} sx={{ paddingTop: 0 }}>
+        <PokemonSpritePanel urls={props.pokemon.sprites} />
       </Grid>
       <DataGrid container item xs={9} spacing={2}>
         {getBasicInfo()}
