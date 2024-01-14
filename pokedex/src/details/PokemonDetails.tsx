@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import { Box, Grid } from "@mui/material"
-import React, { useState } from "react"
+import { Box, Grid, Paper, Typography } from "@mui/material"
+import React from "react"
 import { useLoaderData } from "react-router-dom"
 import SearchField from "../search/SearchComponent"
 import RecentSearch from "../recentSearch/RecentSearch"
@@ -15,7 +15,8 @@ const Header = styled.div`
 
 const PokemonDetails: React.FC<any> = () => {
   const loaderData: any = useLoaderData()
-  const pokemon = loaderData
+  console.info(loaderData)
+  const pokemon = loaderData.pokemon
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -30,9 +31,13 @@ const PokemonDetails: React.FC<any> = () => {
           <RecentSearch />
         </Grid>
         <Grid item xs={9}>
-          <PokemonDetailsPanel pokemon={pokemon}/>
+          <PokemonDetailsPanel pokemon={pokemon} />
         </Grid>
-        <Grid item xs={2}>Evolution list</Grid>
+        <Grid item xs={2}>
+          <Paper elevation={6}>
+            <Typography variant='h5'>Evolution list</Typography>
+          </Paper>
+        </Grid>
       </Grid>
     </Box>
   )
