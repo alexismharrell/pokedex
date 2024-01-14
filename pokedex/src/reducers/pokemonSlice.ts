@@ -141,10 +141,10 @@ const pokemonSlice = createSlice({
         state.list = action.payload
         state.status = "idle"
       })
-      .addCase(fetchAll.pending, (state, action) => {
+      .addCase(fetchAll.pending, (state) => {
         state.status = "pending"
       })
-      .addCase(fetchAll.rejected, (state, actiion) => {
+      .addCase(fetchAll.rejected, (state) => {
         state.status = "rejected"
       })
       .addCase(fetchAbilities.fulfilled, (state, action) => {

@@ -30,6 +30,7 @@ const SearchField: React.FC<any> = () => {
       getOptionLabel={(option: any) => capitalizePokemonName(option.name)}
       renderInput={(params) => <TextField {...params} label="Search for a pokemon" />}
       onChange={(event, val) => {
+        event.preventDefault()
         handleSelect(val)
       }} 
     />

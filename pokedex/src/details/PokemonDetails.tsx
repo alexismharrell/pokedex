@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Box, Grid, Paper, Typography } from "@mui/material"
+import { Box, Grid } from "@mui/material"
 import React from "react"
 import { useLoaderData } from "react-router-dom"
 import SearchField from "../search/SearchComponent"
