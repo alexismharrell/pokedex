@@ -120,7 +120,6 @@ const pokemonSlice = createSlice({
   initialState,
   reducers: {
     updateCache(state, action) {
-      console.info(action)
       const id = action.payload.id
       const name = action.payload.name
       const index = state.cache.findIndex((val: RecentView) => {
